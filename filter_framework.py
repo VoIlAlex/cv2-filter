@@ -1,11 +1,25 @@
 '''
 A little framework to make
 kernel testing simple.
+
+Comman line:
+    python filter_framework.py <path_to_image>
+
+Usage:
+    Write square matrix of numbers.
+    Press 'Apply'. That's it! 
+    It's possible to apply normalization 
+    for an inputed matrix, so that 
+    sum of all the values in that matrix
+    will be equal to 1.
+    ! Matrix must have odd size. 
 '''
+
 import cv2
 import imutils
 import numpy as np
 from tkinter import Tk, Text, Button, END,  Checkbutton, IntVar
+import argparse
 
 
 class FilterFramework:
@@ -99,8 +113,28 @@ class FilterFramework:
 
 
 if __name__ == "__main__":
-    image = cv2.imread('japan_sun.jpg')
+    # get path to image
+    # from arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--image', dest='path_to_image',
+                        help='path to image to apply filtering on')
+    args = parser.parse_args()
+    path_to_image = args.path_to_image
+    if path_to_image is None:
+        print('[INFO] Path to image is missed. Using default...')
+        path_to_image = 'img/japan_sun.jpg'
+
+    # load image and check
+    # if it's loaded correctly
+    image = cv2.imread(path_to_image)
+    if image is None:
+        print('[INFO] Invalid path.')
+        exit(-1)
+
+    # Convert to gray and resize
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     image = imutils.resize(image, width=600)
+
+    # Run the framework
     ff = FilterFramework(image)
     ff.main_loop()
